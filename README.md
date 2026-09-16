@@ -4,6 +4,12 @@ API REST de caronas solidárias entre alunos de uma universidade. Um motorista p
 
 Projeto Diamante — Java Advanced (FIAP).
 
+## Integrantes
+
+- Matheus Carneiro Maciel — RM 567753
+- Murilo Marques — RM 568224
+- Paulo Henrique da Silva Kian — RM 563343
+
 ## Tecnologias
 
 - Java 17
