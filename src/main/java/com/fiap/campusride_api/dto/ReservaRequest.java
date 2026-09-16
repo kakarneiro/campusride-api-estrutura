@@ -1,5 +1,8 @@
 package com.fiap.campusride_api.dto;
 
-// TODO CP2: dados de entrada para reservar uma vaga (passageiro)
-public class ReservaRequest {
+import jakarta.validation.constraints.NotBlank;
+
+public record ReservaRequest(
+
+        @NotBlank(message = "O passageiro é obrigatório") String passageiro) {
 }
