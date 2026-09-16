@@ -8,13 +8,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-// Centraliza o tratamento de erros de toda a API.
-// Sem isso, cada controller precisaria de try/catch e o Spring devolveria
-// respostas genéricas (ou com stack trace) que vazam detalhes internos.
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
-    // Dados de entrada inválidos (@Valid nos DTOs) -> 400
+  
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> tratarValidacao(MethodArgumentNotValidException ex) {
         FieldError erroDeCampo = ex.getBindingResult().getFieldErrors().get(0);
@@ -28,7 +25,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.badRequest().body(resposta);
     }
 
-    // JSON malformado ou valor de enum inexistente (ex: tipoVeiculo "AVIAO") -> 400
+   
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> tratarJsonInvalido(HttpMessageNotReadableException ex) {
         ErrorResponse resposta = ErrorResponse.de(
@@ -48,5 +45,16 @@ public class GlobalExceptionHandler {
                 ex.getMessage());
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(resposta);
+    }
+
+
+    @ExceptionHandler(RegraDeNegocioException.class)
+    public ResponseEntity<ErrorResponse> tratarRegraDeNegocio(RegraDeNegocioException ex) {
+        ErrorResponse resposta = ErrorResponse.de(
+                HttpStatus.CONFLICT.value(),
+                "Operação não permitida",
+                ex.getMessage());
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(resposta);
     }
 }

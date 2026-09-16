@@ -4,6 +4,7 @@ import com.fiap.campusride_api.entity.Carona;
 import com.fiap.campusride_api.entity.SituacaoCarona;
 import com.fiap.campusride_api.entity.SituacaoReserva;
 import com.fiap.campusride_api.exception.RecursoNaoEncontradoException;
+import com.fiap.campusride_api.exception.RegraDeNegocioException;
 import com.fiap.campusride_api.repository.CaronaRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,8 +39,15 @@ public class CaronaService {
     public void cancelar(Long id) {
         Carona carona = buscarPorId(id);
 
-        // TODO CP5: impedir cancelar uma carona que já está CONCLUIDA
+        if (carona.getSituacao() == SituacaoCarona.CONCLUIDA) {
+            throw new RegraDeNegocioException("Não é possível cancelar uma carona já concluída");
+        }
 
+        if (carona.getSituacao() == SituacaoCarona.CANCELADA) {
+            throw new RegraDeNegocioException("Esta carona já está cancelada");
+        }
+
+        // O cancelamento da carona reflete nas reservas associadas
         carona.setSituacao(SituacaoCarona.CANCELADA);
         carona.getReservas().forEach(reserva -> {
             if (reserva.getSituacao() == SituacaoReserva.CONFIRMADA) {
