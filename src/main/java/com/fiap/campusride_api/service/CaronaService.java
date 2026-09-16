@@ -1,5 +1,52 @@
 package com.fiap.campusride_api.service;
 
-// TODO CP2: regras de negócio de Carona (publicar, listar, detalhar, cancelar)
+import com.fiap.campusride_api.entity.Carona;
+import com.fiap.campusride_api.entity.SituacaoCarona;
+import com.fiap.campusride_api.entity.SituacaoReserva;
+import com.fiap.campusride_api.exception.RecursoNaoEncontradoException;
+import com.fiap.campusride_api.repository.CaronaRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+
+@Service
 public class CaronaService {
+
+    private final CaronaRepository caronaRepository;
+
+    // Injeção por construtor (o Spring injeta automaticamente quando há só um
+    // construtor)
+    public CaronaService(CaronaRepository caronaRepository) {
+        this.caronaRepository = caronaRepository;
+    }
+
+    public Carona publicar(Carona carona) {
+        return caronaRepository.save(carona);
+    }
+
+    public List<Carona> listarDisponiveis() {
+        return caronaRepository.findBySituacao(SituacaoCarona.ABERTA);
+    }
+
+    public Carona buscarPorId(Long id) {
+        return caronaRepository.findById(id)
+                .orElseThrow(() -> new RecursoNaoEncontradoException("Carona não encontrada com id " + id));
+    }
+
+    @Transactional
+    public void cancelar(Long id) {
+        Carona carona = buscarPorId(id);
+
+        // TODO CP5: impedir cancelar uma carona que já está CONCLUIDA
+
+        carona.setSituacao(SituacaoCarona.CANCELADA);
+        carona.getReservas().forEach(reserva -> {
+            if (reserva.getSituacao() == SituacaoReserva.CONFIRMADA) {
+                reserva.setSituacao(SituacaoReserva.CANCELADA);
+            }
+        });
+
+        caronaRepository.save(carona);
+    }
 }

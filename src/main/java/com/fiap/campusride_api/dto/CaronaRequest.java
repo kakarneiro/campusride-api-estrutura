@@ -26,14 +26,14 @@ public record CaronaRequest(
 
     // Converte o DTO de entrada na entidade, já nascendo com situação ABERTA
     public Carona toEntity() {
-        return Carona.builder()
-                .motorista(motorista)
-                .origem(origem)
-                .destino(destino)
-                .horarioPartida(horarioPartida)
-                .tipoVeiculo(tipoVeiculo)
-                .vagasTotais(vagasTotais)
-                .situacao(SituacaoCarona.ABERTA)
-                .build();
+        Carona carona = new Carona();
+        carona.setMotorista(motorista);
+        carona.setOrigem(origem);
+        carona.setDestino(destino);
+        carona.setHorarioPartida(horarioPartida);
+        carona.setTipoVeiculo(tipoVeiculo);
+        carona.setVagasTotais(vagasTotais);
+        carona.setSituacao(SituacaoCarona.ABERTA);
+        return carona;
     }
 }

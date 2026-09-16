@@ -5,7 +5,6 @@ import com.fiap.campusride_api.dto.CaronaResponse;
 import com.fiap.campusride_api.entity.Carona;
 import com.fiap.campusride_api.service.CaronaService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/caronas")
-@RequiredArgsConstructor
 public class CaronaController {
 
     private final CaronaService caronaService;
+
+    public CaronaController(CaronaService caronaService) {
+        this.caronaService = caronaService;
+    }
 
     @PostMapping
     public ResponseEntity<CaronaResponse> publicar(@RequestBody @Valid CaronaRequest request) {

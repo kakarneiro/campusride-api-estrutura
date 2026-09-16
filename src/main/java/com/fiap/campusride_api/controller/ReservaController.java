@@ -5,16 +5,18 @@ import com.fiap.campusride_api.dto.ReservaResponse;
 import com.fiap.campusride_api.entity.Reserva;
 import com.fiap.campusride_api.service.ReservaService;
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequiredArgsConstructor
 public class ReservaController {
 
     private final ReservaService reservaService;
+
+    public ReservaController(ReservaService reservaService) {
+        this.reservaService = reservaService;
+    }
 
     @PostMapping("/caronas/{caronaId}/reservas")
     public ResponseEntity<ReservaResponse> reservar(@PathVariable Long caronaId,
